@@ -13,6 +13,8 @@ export function createBoard (dim, mines) {
     isMine: false,
     totalAdjBombs: 0,
     isSweeped: false,
+    isGameOver: false,
+    charred: 0
   }
   const board1D = new Array(dim * dim).fill(null).map((_, index) => (
     {
@@ -26,9 +28,6 @@ export function createBoard (dim, mines) {
   let minesPlaced = 0;
   while (minesPlaced < mines) {
     const placement = rng(0, (dim * dim) - 1);
-    console.log(minesPlaced)
-    console.log(placement)
-    console.log(board1D[placement].isMine)
     if (!board1D[placement].isMine) {
       minesPlaced++;
       board1D[placement].isMine = true;
@@ -41,7 +40,19 @@ export function createBoard (dim, mines) {
 
   for (let i = 0; i < dim; i++) {
     for (let j = 0; j < dim; j++) {
-      if (!board2D[i][j].isMine) board2D[i][j].totalAdjBombs = getAdjBombs(i, j, [...board2D]);
+      if (!board2D[i][j].isMine) {
+        board2D[i][j].totalAdjBombs = getAdjBombs(i, j, [...board2D]);
+      } else {
+        // Calculating charred effect when game is over
+        for (const cell of [
+          ...getNeighbours(i, j, [...board2D], 3),
+          ...getNeighbours(i, j, [...board2D], 2),
+          ...getNeighbours(i, j, [...board2D])
+        ]) {
+          board2D[cell.i][cell.j].charred++;
+        }
+        board2D[i][j].charred = 999;
+      }
     }
   }
 
@@ -79,12 +90,25 @@ export function revealAdj (centerI, centerJ, board2D) {
   return [...newBoard];
 }
 
-function getNeighbours (centerI, centerJ, board2D) {
+function getNeighbours (centerI, centerJ, board2D, radius = 1) {
   const neighbours = []
-  for (let i = centerI - 1; i <= centerI + 1; i++) {
-    for (let j = centerJ - 1; j <= centerJ + 1; j++) {
+  for (let i = centerI - radius; i <= centerI + radius; i++) {
+    for (let j = centerJ - radius; j <= centerJ + radius; j++) {
       if (board2D[i] && board2D[i][j]) neighbours.push({...board2D[i][j]})
     }
   }
   return [...neighbours];
+}
+
+export default function revealEntireBoard (board2D, ) {
+  const newBoard = [...board2D];
+
+  for (let i = 0; i < board2D.length; i++) {
+    for (let j = 0; j < board2D[0].length; j++) {
+      newBoard[i][j].isSweeped = true;
+      newBoard[i][j].isGameOver = true;
+    }
+  }
+
+  return newBoard;
 }
