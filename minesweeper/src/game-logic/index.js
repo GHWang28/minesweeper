@@ -112,3 +112,8 @@ export default function revealEntireBoard (board2D, ) {
 
   return newBoard;
 }
+
+export function calcDistance (cellA, cellB) {
+  // Pythagoras
+  return Math.sqrt(Math.pow(cellB.i - cellA.i, 2) + Math.pow(cellB.j - cellA.j, 2));
+}

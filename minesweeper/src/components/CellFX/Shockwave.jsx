@@ -27,7 +27,7 @@ export default function Shockwave ({ length, color = 'white', radius = 5 }) {
         position: 'absolute'
       }}
     >
-      <circle cx='50' cy='50' r='40' stroke={color} stroke-width='1' fill='none'/>
+      <circle cx='50' cy='50' r='40' stroke={color} strokeWidth='1' fill='none'/>
     </Box>
   )
 }

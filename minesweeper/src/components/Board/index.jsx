@@ -1,17 +1,14 @@
-import { Grid } from "@mui/material";
-import { useEffect, useState } from "react";
-import revealEntireBoard, { createBoard, revealAdj } from "../../game-logic";
-import Cell from "../Cell";
-import CellFx from "../CellFX";
+import { Grid } from '@mui/material';
+import React, { useState } from 'react';
+import revealEntireBoard, { createBoard, revealAdj } from '../../game-logic';
+import Cell from '../Cell';
+import CellFx from '../CellFX';
 
 export default function Board ({ dim, mines, gameManagement }) {
 
-  const [boardData, setBoardData] = useState(null);
+  const [boardData, setBoardData] = useState(createBoard(dim, mines));
   const [totalClicks, setTotalClicks] = useState(0);
-
-  useEffect(() => {
-    setBoardData(createBoard(dim, mines));
-  }, [dim, mines])
+  const [hoveringCell, setHoveringCell] = useState({ i: Math.floor(dim / 2), j: Math.floor(dim / 2) })
 
   if (!boardData) return null;
 
@@ -51,7 +48,9 @@ export default function Board ({ dim, mines, gameManagement }) {
                 <Cell
                   data={cell}
                   startOfGame={totalClicks === 0}
+                  hoveringCell={hoveringCell}
                   onClick={() => {
+                    setHoveringCell({ i: cell.i, j: cell.j })
                     if (cell.isMine) {
                       setBoardData(revealEntireBoard([...boardData]));
                       gameManagement.setGameOver(true);
