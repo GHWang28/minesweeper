@@ -4,7 +4,7 @@ import revealEntireBoard, { createBoard, revealAdj } from "../../game-logic";
 import Cell from "../Cell";
 import CellFx from "../CellFX";
 
-export default function Board ({ dim, mines }) {
+export default function Board ({ dim, mines, gameManagement }) {
 
   const [boardData, setBoardData] = useState(null);
   const [totalClicks, setTotalClicks] = useState(0);
@@ -19,13 +19,20 @@ export default function Board ({ dim, mines }) {
     <Grid
       container
       sx={{
-        bgcolor: 'rgb(35,116,14)',
+        bgcolor: (gameManagement.gameOver) ? 'rgb(30,30,30)' : 'rgb(35,116,14)',
         width: 'min(100vh,100vw)',
         height: 'min(100vh,100vw)',
         overflow: 'hidden'
       }}
     >
-      <Grid item xs={12} sx={{ bgcolor: 'rgb(35,116,14)', height: 'min(5vh,5vw)' }}>
+      <Grid
+        item
+        xs={12}
+        sx={{
+          bgcolor: (gameManagement.gameOver) ? 'rgb(30,30,30)' : 'rgb(35,116,14)',
+          height: 'min(5vh,5vw)'
+        }}
+      >
 
       </Grid>
       <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
@@ -47,6 +54,7 @@ export default function Board ({ dim, mines }) {
                   onClick={() => {
                     if (cell.isMine) {
                       setBoardData(revealEntireBoard([...boardData]));
+                      gameManagement.setGameOver(true);
                     } else {
                       setBoardData(revealAdj(indexI, indexJ, [...boardData]));
                       setTotalClicks(totalClicks + 1);

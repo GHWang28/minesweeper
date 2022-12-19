@@ -1,8 +1,17 @@
+import React, { Fragment, useEffect, useState } from 'react';
 import { Box } from '@mui/material';
-import React, { Fragment } from 'react';
+import Flower from './Flower';
 import Shockwave from './Shockwave';
+import { rng } from '../../game-logic';
+import Fire from './Fire';
 
 export default function CellFx ({ data }) {
+
+  const [hasFlower, setHasFlower] = useState(false);
+
+  useEffect(() => {
+    setHasFlower(rng(0, 2) === 0);
+  }, [])
 
   return (
     <Box
@@ -26,14 +35,19 @@ export default function CellFx ({ data }) {
             sx={{
               position: 'absolute',
               width: 'min(20vw,20vh)',
-              bottom: '50%',
               zIndex: 2
             }}
           />
-          <Shockwave length={1} color='whitesmoke' />
-          <Shockwave length={1.2} color='whitesmoke' />
-          <Shockwave length={0.75} color='red' radius={7} />
+          <Shockwave length={0.75} color='red' />
+          <Shockwave length={0.75} color='orange' radius={6} />
+          <Shockwave length={0.5} color='whitesmoke' radius={7} />
         </Fragment>
+      )}
+      {(hasFlower) && (
+        <Flower show={!data.isGameOver && !data.isSweeped}/>
+      )}
+      {(hasFlower && data.isGameOver) && (
+        <Fire />
       )}
     </Box>
   )
