@@ -13,7 +13,7 @@ export function createBoard (dim, mines) {
     isMine: false,
     totalAdjBombs: 0,
     isSweeped: false,
-    isGameOver: false,
+    isFlagged: false,
     charred: 0
   }
   const board1D = new Array(dim * dim).fill(null).map((_, index) => (
@@ -51,7 +51,7 @@ export function createBoard (dim, mines) {
         ]) {
           board2D[cell.i][cell.j].charred++;
         }
-        board2D[i][j].charred = 999;
+        board2D[i][j].charred += 2;
       }
     }
   }
@@ -66,6 +66,12 @@ function getAdjBombs (centerI, centerJ, board2D) {
   }
 
   return totalNeighbourBombs;
+}
+
+export function setFlag (i, j, board2D) {
+  const newBoard = [...board2D];
+  newBoard[i][j].isFlagged = !newBoard[i][j].isFlagged;
+  return [...newBoard];
 }
 
 export function revealAdj (centerI, centerJ, board2D) {
@@ -98,19 +104,6 @@ function getNeighbours (centerI, centerJ, board2D, radius = 1) {
     }
   }
   return [...neighbours];
-}
-
-export function revealEntireBoard (board2D) {
-  const newBoard = [...board2D];
-
-  for (let i = 0; i < board2D.length; i++) {
-    for (let j = 0; j < board2D[0].length; j++) {
-      newBoard[i][j].isSweeped = true;
-      newBoard[i][j].isGameOver = true;
-    }
-  }
-
-  return newBoard;
 }
 
 export function calcDistance (cellA, cellB) {

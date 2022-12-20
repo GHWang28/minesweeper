@@ -1,7 +1,22 @@
 import React from 'react';
-import { Box, Grid, LinearProgress, Typography } from '@mui/material';
+import { Box, Grid, IconButton, keyframes, LinearProgress, Typography } from '@mui/material';
+import ReplayIcon from '@mui/icons-material/Replay';
 
-export default function NavBar ({ mines, progress, gameOver }) {
+const wobbleAnimation = keyframes`
+  0% {
+    rotate: 10deg
+  }
+  50% {
+    rotate: -10deg
+  }
+  100% {
+    rotate: 10deg
+  }
+`
+
+export default function NavBar ({ mines, progress, gameOver, onReset, totalFlags }) {
+  const gameEnd = (gameOver || progress >= 1);
+
   return (
     <Grid container sx={{ height: '100%' }}>
       <Grid item xs={1} sx={{ height: '100%' }}>
@@ -15,10 +30,32 @@ export default function NavBar ({ mines, progress, gameOver }) {
           }}
         />
       </Grid>
-      <Grid item xs={5} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
-        <Typography fontSize={'min(4vh,4vw)'} color='whitesmoke'>
-          {`Total Mines: ${mines}`}
+      <Grid item xs={5} sx={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'left' }}>
+        <Typography fontSize={'min(2vh,2vw)'} color='whitesmoke'>
+        <Box component='span' sx={{ fontWeight: 'bold' }}>{'Total Mines: '}</Box>{mines}
         </Typography>
+        <Typography fontSize={'min(2vh,2vw)'} color='whitesmoke'>
+          <Box component='span' sx={{ fontWeight: 'bold' }}>{'Total Flags: '}</Box>{totalFlags}
+        </Typography>
+      </Grid>
+      <Grid item xs={6} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+        <Typography
+          fontSize={'min(2vh,2vw)'}
+          fontWeight={(gameEnd) ? 'bold' : 'normal' }
+          color='whitesmoke'
+          ml='auto'
+          mr='min(1vh,1vw)'
+          align='left'
+          sx={{
+            animation: (gameEnd) ? `${wobbleAnimation} 2s ease-in-out infinite` : '',
+            animationDelay: '-1s'
+          }}
+        >
+          {'Reset Game'}
+        </Typography>
+        <IconButton onClick={onReset} sx={{ border: '2px solid whitesmoke', width: 'min(4vh,4vw)', height: 'min(4vh,4vw)' }}>
+          <ReplayIcon sx={{ width: 'min(3vh,3vw)', height: 'min(3vh,3vw)' }}/>
+        </IconButton>
       </Grid>
       <Grid item xs={12}>
         <LinearProgress

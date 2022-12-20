@@ -2,8 +2,8 @@ import React, { useReducer } from 'react';
 import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Typography } from '@mui/material';
 
 const formDefault = {
-  totalMines: 5,
-  boardDimension: 10,
+  totalMines: 20,
+  boardDimension: 15,
 }
 function formReducer (currState, action) {
   switch (action.type) {
@@ -32,7 +32,7 @@ export default function StartGameDialog ({ open, onClose }) {
 
   return (
     <Dialog open={open} onClose={onCloseHandle}>
-      <DialogTitle align='center'>💣 Minesweeper 💣</DialogTitle>
+      <DialogTitle align='center'>Minesweeper</DialogTitle>
       <DialogContent>
         <DialogContentText mb={5} align='center'>
           Select the total mines and board dimension you want to play with:

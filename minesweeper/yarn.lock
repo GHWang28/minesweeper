@@ -1625,6 +1625,13 @@
   resolved "https://registry.yarnpkg.com/@mui/core-downloads-tracker/-/core-downloads-tracker-5.11.0.tgz#7ae98a3df113270097f3024c713c4efce5537c6a"
   integrity sha512-Bmogung451ezVv2YI1RvweOIVsTj2RQ4Fk61+e/+8LFPLTFEwVGbL0YhNy1VB5tri8pzGNV228kxtWVTFooQkg==
 
+"@mui/icons-material@^5.11.0":
+  version "5.11.0"
+  resolved "https://registry.yarnpkg.com/@mui/icons-material/-/icons-material-5.11.0.tgz#9ea6949278b2266d2683866069cd43009eaf6464"
+  integrity sha512-I2LaOKqO8a0xcLGtIozC9xoXjZAto5G5gh0FYUMAlbsIHNHIjn4Xrw9rvjY20vZonyiGrZNMAlAXYkY6JvhF6A==
+  dependencies:
+    "@babel/runtime" "^7.20.6"
+
 "@mui/material@^5.11.0":
   version "5.11.0"
   resolved "https://registry.yarnpkg.com/@mui/material/-/material-5.11.0.tgz#01ead6ca389de440fbc78b2dbb8547845ca40f93"
@@ -8798,6 +8805,11 @@ url-parse@^1.5.3:
   dependencies:
     querystringify "^2.1.1"
     requires-port "^1.0.0"
+
+use-long-press@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/use-long-press/-/use-long-press-2.0.2.tgz#3c945ee45b671e9c6976fe5364bdb5f563b3ff82"
+  integrity sha512-zQ4sujilCykA7fSZ+m2gDuGw5aW3Gm3M4pulRH4e8c4mGXw8MDQIMthCsHiolxpt/hCe/BbIvd/iDn9XNDzkYg==
 
 use-sound@^4.0.1:
   version "4.0.1"

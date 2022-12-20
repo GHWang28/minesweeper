@@ -17,7 +17,7 @@ function App() {
   return (
     <Fragment>
       {(gameWon && !gameOver) && (
-        <ReactConfetti width={width} height={height} numberOfPieces={600}/>
+        <ReactConfetti width={width} height={height} numberOfPieces={1000}/>
       )}
       <StartGameDialog
         open={showStart}
@@ -27,11 +27,28 @@ function App() {
           setShowStart(false);
         }}
       />
-      {(!showStart) && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', height: '100%'}}>
-          <Board dim={dim} mines={mines} gameManagement={{ gameOver, setGameOver, gameWon, setGameWon }}/>
-        </Box>
-      )}
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100vw', height: '100vh'}}>
+        {(!showStart) ? (
+          <Board
+            dim={dim}
+            mines={mines}
+            gameManagement={{ gameOver, setGameOver, gameWon, setGameWon }}
+            onReset={() => {
+              setGameOver(false);
+              setGameWon(false);
+              setShowStart(true);
+            }}
+          />
+        ) : (
+          <Box
+            sx={{
+              width: 'min(100vw,100vh)',
+              height: 'min(100vw,100vh)',
+              bgcolor: 'forestgreen'
+            }}
+          />
+        )}
+      </Box>
     </Fragment>
   );
 }

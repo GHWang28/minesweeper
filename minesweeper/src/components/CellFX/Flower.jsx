@@ -1,14 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { Box } from '@mui/material';
+import { Box, keyframes } from '@mui/material';
 import { rng } from '../../game-logic';
 import { animated, useTransition } from 'react-spring';
 
+const flowerAnimation = keyframes`
+  0% {
+    rotate: 0deg;
+  }
+  50% {
+    rotate: 100deg;
+  }
+  100% {
+    rotate: 0deg;
+  }
+`
 
 export default function Flower ({ show = true }) {
-  const [data, setData] = useState({ x: 0, y: 0, hue: 0 });
+  const [data, setData] = useState({ x: 0, y: 0, hue: 0, rot: 0 });
 
   useEffect(() => {
-    setData({ x: rng(0,100), y: rng(0,100), hue: rng(0, 259) });
+    setData({ x: rng(0,100), y: rng(0,100), hue: rng(0, 359), rot: rng(0, 359) });
   }, []);
 
   const transitions = useTransition(show, {
@@ -33,6 +44,8 @@ export default function Flower ({ show = true }) {
           left: `${data.x}%`,
           width: '50%',
           translate: '-50% -50%',
+          rotate: `${data.rot}deg`,
+          animation: `${flowerAnimation} 2s ease-in-out infinite`,
           zIndex: 2
         }}
       />
