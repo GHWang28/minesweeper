@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Grid } from '@mui/material';
-import { createBoard, revealAdj, getTotalSweeped, rng, setFlag } from '../../game-logic';
+import { createBoard, revealAdj, getTotalSweeped, rng, setFlag, regenBoard } from '../../game-logic';
 import Cell from '../Cell';
 import CellFx from '../CellFX';
 import NavBar from '../NavBar';
@@ -11,12 +11,13 @@ import SweepSFX2 from '../../sfx/sweep-2.ogg';
 import SweepSFX3 from '../../sfx/sweep-3.ogg';
 import FlagSFX from '../../sfx/flag.ogg';
 import VictorySFX from '../../sfx/victory.ogg';
+import { useStopwatch } from 'react-timer-hook';
 
-export default function Board ({ dim, mines, gameManagement, onReset }) {
-
+export default function Board ({ dim, mines, gameManagement, onReset, onShowInfo }) {
   const [boardData, setBoardData] = useState(createBoard(dim, mines));
   const [totalFlags, setTotalFlags] = useState(0);
   const [totalClicks, setTotalClicks] = useState(0);
+  const [score, setScore] = useState(0);
   const [hoveringCell, setHoveringCell] = useState({ i: Math.floor(dim / 2), j: Math.floor(dim / 2) })
 
   // Play SFX
@@ -26,14 +27,9 @@ export default function Board ({ dim, mines, gameManagement, onReset }) {
   const [playSweep3] = useSound(SweepSFX3);
   const [playFlagSFX] = useSound(FlagSFX);
   const [playVictorySFX] = useSound(VictorySFX);
-  const score = getTotalSweeped(boardData) / (Math.pow(dim, 2) - mines);
 
-  useEffect(() => {
-    if (score >= 1) {
-      gameManagement.setGameWon(true);
-      playVictorySFX();
-    }
-  }, [score, gameManagement, playVictorySFX])
+  // Timer
+  const timerData = useStopwatch({ autoStart: false });
 
   if (!boardData) return null;
 
@@ -45,19 +41,40 @@ export default function Board ({ dim, mines, gameManagement, onReset }) {
       case 1: playSweep2(); break;
       case 2: playSweep3(); break;
     }
-    if (cell.isMine) {
-      playBoom();
+    
+    let newBoard = [...boardData];
+    if ((cell.isMine || cell.totalAdjBombs !== 0) && totalClicks === 0) {
+      newBoard = regenBoard(cell.i, cell.j, dim, mines);
+    }
+    
+    if (!newBoard || newBoard[cell.i][cell.j].isMine) {
       gameManagement.setGameOver(true);
+      timerData.pause();
+      playBoom();
     } else {
-      setBoardData(revealAdj(cell.i, cell.j, [...boardData]));
-      setTotalClicks(totalClicks + 1);
+      checkWon(cell, [...newBoard]);
     }
   }
+  const checkWon = (cell, inputBoard) => {
+    // Checking if won
+    const newBoard = revealAdj(cell.i, cell.j, [...inputBoard]);
+    const newScore = getTotalSweeped([...newBoard]) / (Math.pow(dim, 2) - mines);
+    if (newScore >= 1) {
+      gameManagement.setGameWon(true);
+      playVictorySFX();
+      timerData.pause();
+    } else if (!timerData.isRunning) {
+      timerData.start();
+    }
+    setScore(newScore);
+    setBoardData([...newBoard]);
+    setTotalClicks(totalClicks + 1);
+  }
+
   const onFlag = (cell) => {
     // Flagging mechanic
     playFlagSFX();
-    setTotalFlags(Math.max(0, totalFlags + (boardData[cell.i][cell.j].isFlagged) ? 1 : -1));
-    setBoardData(setFlag(cell.i, cell.j, [...boardData]));
+    setBoardData(setFlag(cell.i, cell.j, [...boardData], { totalFlags, setTotalFlags }));
   }
   const onResetWrap = () => {
     // Resetting the game
@@ -91,6 +108,8 @@ export default function Board ({ dim, mines, gameManagement, onReset }) {
           gameOver={gameManagement.gameOver}
           totalFlags={totalFlags}
           onReset={onResetWrap}
+          onShowInfo={onShowInfo}
+          timerData={timerData}
         />
       </Grid>
       <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
@@ -98,13 +117,11 @@ export default function Board ({ dim, mines, gameManagement, onReset }) {
           {boardData.map((row, indexI) => (
             row.map((cell, indexJ) => (
               <Grid
-                key={`cell-${indexI}-${indexJ}`}
+                key={`cell-${cell.key}`}
                 item
                 xs={12 / dim}
                 sx={{
-                  position: 'relative',
-                  color: (cell.isGameOver) ? 'whitesmoke' : 'black',
-                  perspective: '500px'
+                  position: 'relative'
                 }}
               >
                 <Cell
@@ -122,11 +139,19 @@ export default function Board ({ dim, mines, gameManagement, onReset }) {
           ))}
         </Grid>
         {/* sfx */}
-        <Grid container sx={{ pointerEvents: 'none', width: 'min(92vh,94vw)', height: 'min(92vh,92vw)', position: 'absolute' }}>
-          {boardData.map((row, indexI) => (
-            row.map((cell, indexJ) => (
+        <Grid
+          container
+          sx={{
+            pointerEvents: 'none',
+            width: 'min(92vh,94vw)',
+            height: 'min(92vh,92vw)',
+            position: 'absolute'
+          }}
+        >
+          {boardData.map((row) => (
+            row.map((cell) => (
               <Grid
-                key={`cell-${indexI}-${indexJ}`}
+                key={`cell-sfx-${cell.key}`}
                 item
                 xs={12 / dim}
                 sx={{ position: 'relative', pointerEvents: 'none' }}

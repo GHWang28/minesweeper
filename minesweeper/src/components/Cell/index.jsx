@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import { animated, useTransition } from 'react-spring';
 import { useLongPress } from 'use-long-press';
 import { calcDistance } from '../../game-logic';
@@ -29,7 +29,7 @@ const generateColor = (inputData, inputSweep, gameOver) => {
 }
 
 export default function Cell ({ onLeftClick, onRightClick, data, hoveringCell, gameOver, gameWon, odd }) {
-
+  const [lastFlagged, setLastFlagged] = useState(0);
   const transitions = useTransition(data.isSweeped, {
     from: { rotateY: '-180deg' },
     enter: { rotateY: '0deg' },
@@ -39,8 +39,9 @@ export default function Cell ({ onLeftClick, onRightClick, data, hoveringCell, g
 
   const onRightClickWrap = (event) => {
     event.preventDefault();
-    if (data.isSweeped) return;
+    if (data.isSweeped || Date.now() - lastFlagged <= 950) return;
     onRightClick();
+    setLastFlagged(Date.now());
   }
   const onLeftClickWrap = () => {
     if (data.isFlagged || data.isSweeped || gameOver || gameWon) return;

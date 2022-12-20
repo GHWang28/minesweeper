@@ -19,6 +19,7 @@ export function createBoard (dim, mines) {
   const board1D = new Array(dim * dim).fill(null).map((_, index) => (
     {
       ...defaultCell,
+      key: `${Math.floor(index / dim)}-${index % dim}`,
       i: Math.floor(index / dim),
       j: index % dim
     }
@@ -68,8 +69,9 @@ function getAdjBombs (centerI, centerJ, board2D) {
   return totalNeighbourBombs;
 }
 
-export function setFlag (i, j, board2D) {
+export function setFlag (i, j, board2D, flagManagement) {
   const newBoard = [...board2D];
+  flagManagement.setTotalFlags(flagManagement.totalFlags + ((newBoard[i][j].isFlagged) ? -1 : 1))
   newBoard[i][j].isFlagged = !newBoard[i][j].isFlagged;
   return [...newBoard];
 }
@@ -120,4 +122,16 @@ export function getTotalSweeped (board2D) {
   }
 
   return totalSweeped;
+}
+
+export function regenBoard (i, j, dim, mines) {
+  let newBoard = createBoard(dim, mines);
+  let timeoutCounter = 0;
+  while (newBoard[i][j].isMine && newBoard[i][j].totalAdjBombs !== 0 && timeoutCounter <= dim * dim * 2) {
+    newBoard = createBoard(dim, mines);
+    timeoutCounter++;
+  }
+
+  if (newBoard[i][j].isMine) return null;
+  return [...newBoard];
 }

@@ -1,12 +1,25 @@
 import React, { useReducer } from 'react';
 import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Typography } from '@mui/material';
+import config from '../../config.json';
 
 const formDefault = {
-  totalMines: 20,
-  boardDimension: 15,
+  totalMines: 10,
+  boardDimension: 11,
 }
 function formReducer (currState, action) {
   switch (action.type) {
+    case 'easy-mode':
+      return formDefault
+    case 'normal-mode':
+      return {
+        totalMines: 25,
+        boardDimension: 13,
+      }
+    case 'hard-mode':
+      return {
+        totalMines: 50,
+        boardDimension: 16,
+      }
     case 'update':
       return {
         ...currState,
@@ -21,12 +34,11 @@ function formReducer (currState, action) {
   }
 }
 
-
-export default function StartGameDialog ({ open, onClose }) {
+export default function DialogStartGame ({ open, onClose }) {
   const [formState, formDispatch] = useReducer(formReducer, formDefault);
   const { totalMines, boardDimension } = formState;
   const onCloseHandle = () => {
-    if (totalMines >= (boardDimension * boardDimension)) return;
+    if (totalMines >= (boardDimension * boardDimension) || boardDimension > config.DIM_CAP) return;
     onClose(totalMines, boardDimension);
   }
 
@@ -74,10 +86,28 @@ export default function StartGameDialog ({ open, onClose }) {
             error={totalMines >= (boardDimension * boardDimension)}
           />
         </Box>
+        <Box mt={2.5} sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
+          <Button variant='outlined' onClick={() => { formDispatch({ type: 'easy-mode' }) }}>
+            Easy
+          </Button>
+          <Button variant='outlined' onClick={() => { formDispatch({ type: 'normal-mode' }) }}>
+            Normal
+          </Button>
+          <Button variant='outlined' onClick={() => { formDispatch({ type: 'hard-mode' }) }}>
+            Hard
+          </Button>
+        </Box>
         {(totalMines >= (boardDimension * boardDimension)) && (
           <Alert variant='outlined' severity='error' sx={{ mt: 2.5 }}>
             <Typography>
               {'The Total Mines can\'t exceed the Board Dimension to the power of 2.'}
+            </Typography>
+          </Alert>
+        )}
+        {(boardDimension > config.DIM_CAP) && (
+          <Alert variant='outlined' severity='error' sx={{ mt: 2.5 }}>
+            <Typography>
+              {`Board dimension is capped at ${config.DIM_CAP} by ${config.DIM_CAP}.`}
             </Typography>
           </Alert>
         )}

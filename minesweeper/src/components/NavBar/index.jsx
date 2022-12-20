@@ -1,6 +1,8 @@
 import React from 'react';
 import { Box, Grid, IconButton, keyframes, LinearProgress, Typography } from '@mui/material';
 import ReplayIcon from '@mui/icons-material/Replay';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import Timer from './Timer';
 
 const wobbleAnimation = keyframes`
   0% {
@@ -14,11 +16,23 @@ const wobbleAnimation = keyframes`
   }
 `
 
-export default function NavBar ({ mines, progress, gameOver, onReset, totalFlags }) {
+const rotateAnimation = keyframes`
+  0% {
+    scale: 1.0
+  }
+  50% {
+    scale: 0.9
+  }
+  100% {
+    scale: 1.0
+  }
+`
+
+export default function NavBar ({ mines, progress, gameOver, onReset, onShowInfo, totalFlags, timerData }) {
   const gameEnd = (gameOver || progress >= 1);
 
   return (
-    <Grid container sx={{ height: '100%' }}>
+    <Grid container sx={{ height: '100%', color: 'whitesmoke'}}>
       <Grid item xs={1} sx={{ height: '100%' }}>
         <Box
           sx={{
@@ -30,22 +44,21 @@ export default function NavBar ({ mines, progress, gameOver, onReset, totalFlags
           }}
         />
       </Grid>
-      <Grid item xs={5} sx={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'left' }}>
-        <Typography fontSize={'min(2vh,2vw)'} color='whitesmoke'>
+      <Grid item xs={3} sx={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'left' }}>
+        <Typography fontSize={'min(2vh,2vw)'}>
         <Box component='span' sx={{ fontWeight: 'bold' }}>{'Total Mines: '}</Box>{mines}
         </Typography>
-        <Typography fontSize={'min(2vh,2vw)'} color='whitesmoke'>
+        <Typography fontSize={'min(2vh,2vw)'}>
           <Box component='span' sx={{ fontWeight: 'bold' }}>{'Total Flags: '}</Box>{totalFlags}
         </Typography>
       </Grid>
-      <Grid item xs={6} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+      <Timer timerData={timerData} gameOver={gameOver}/>
+      <Grid item xs={4} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
         <Typography
           fontSize={'min(2vh,2vw)'}
           fontWeight={(gameEnd) ? 'bold' : 'normal' }
-          color='whitesmoke'
           ml='auto'
           mr='min(1vh,1vw)'
-          align='left'
           sx={{
             animation: (gameEnd) ? `${wobbleAnimation} 2s ease-in-out infinite` : '',
             animationDelay: '-1s'
@@ -53,8 +66,21 @@ export default function NavBar ({ mines, progress, gameOver, onReset, totalFlags
         >
           {'Reset Game'}
         </Typography>
-        <IconButton onClick={onReset} sx={{ border: '2px solid whitesmoke', width: 'min(4vh,4vw)', height: 'min(4vh,4vw)' }}>
+        <IconButton
+          title='Restart'
+          onClick={onReset}
+          sx={{
+            mr: 'min(1vh,1vw)',
+            border: '2px solid whitesmoke',
+            width: 'min(4vh,4vw)',
+            height: 'min(4vh,4vw)',
+            animation: (gameEnd) ? `${rotateAnimation} 1s ease-in-out infinite` : ''
+          }}
+        >
           <ReplayIcon sx={{ width: 'min(3vh,3vw)', height: 'min(3vh,3vw)' }}/>
+        </IconButton>
+        <IconButton title='How to Play' onClick={onShowInfo} sx={{ border: '2px solid whitesmoke', width: 'min(4vh,4vw)', height: 'min(4vh,4vw)' }}>
+          <InfoOutlinedIcon sx={{ width: 'min(3vh,3vw)', height: 'min(3vh,3vw)' }}/>
         </IconButton>
       </Grid>
       <Grid item xs={12}>

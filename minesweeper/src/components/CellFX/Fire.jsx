@@ -31,7 +31,7 @@ export default function Fire ({ show = true }) {
           top: `${data.y}%`,
           left: `${data.x}%`,
           width: '200%',
-          translate: '-50% -50%',
+          translate: '-50% -75%',
           zIndex: 2
         }}
       />
