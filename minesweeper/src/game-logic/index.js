@@ -100,7 +100,7 @@ function getNeighbours (centerI, centerJ, board2D, radius = 1) {
   return [...neighbours];
 }
 
-export default function revealEntireBoard (board2D, ) {
+export function revealEntireBoard (board2D) {
   const newBoard = [...board2D];
 
   for (let i = 0; i < board2D.length; i++) {
@@ -116,4 +116,15 @@ export default function revealEntireBoard (board2D, ) {
 export function calcDistance (cellA, cellB) {
   // Pythagoras
   return Math.sqrt(Math.pow(cellB.i - cellA.i, 2) + Math.pow(cellB.j - cellA.j, 2));
+}
+
+export function getTotalSweeped (board2D) {
+  let totalSweeped = 0;
+  for (let i = 0; i < board2D.length; i++) {
+    for (let j = 0; j < board2D[0].length; j++) {
+      totalSweeped += board2D[i][j].isSweeped;
+    }
+  }
+
+  return totalSweeped;
 }

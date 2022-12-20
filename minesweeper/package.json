@@ -6,10 +6,13 @@
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@mui/material": "^5.11.0",
+    "@react-hook/window-size": "^3.1.1",
     "react": "^18.2.0",
+    "react-confetti": "^6.1.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
-    "react-spring": "^9.6.1"
+    "react-spring": "^9.6.1",
+    "use-sound": "^4.0.1"
   },
   "scripts": {
     "predeploy": "npm run build",
