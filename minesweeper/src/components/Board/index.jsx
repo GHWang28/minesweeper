@@ -11,16 +11,23 @@ import SweepSFX2 from '../../sfx/sweep-2.ogg';
 import SweepSFX3 from '../../sfx/sweep-3.ogg';
 import FlagSFX from '../../sfx/flag.ogg';
 import VictorySFX from '../../sfx/victory.ogg';
-import { useStopwatch } from 'react-timer-hook';
+import { useDispatch, useSelector } from 'react-redux';
+import { setGameOver, setGameWon } from '../../redux/actions';
 
-export default function Board ({ dim, mines, gameManagement, onReset, onShowInfo }) {
+export default function Board ({ dim, mines, onReset, onShowInfo, onShowHighscore }) {
   const [boardData, setBoardData] = useState(createBoard(dim, mines));
   const [totalFlags, setTotalFlags] = useState(0);
   const [totalClicks, setTotalClicks] = useState(0);
   const [score, setScore] = useState(0);
   const [hoveringCell, setHoveringCell] = useState({ i: Math.floor(dim / 2), j: Math.floor(dim / 2) })
 
+  // Redux
+  const gameOver = useSelector(state => state.gameOver);
+  // const gameWon = useSelector(state => state.gameWon);
+  const dispatch = useDispatch();
+
   // Play SFX
+  const mute = useSelector(state => state.mute);
   const [playBoom] = useSound(ExplosionSFX);
   const [playSweep1] = useSound(SweepSFX1);
   const [playSweep2] = useSound(SweepSFX2);
@@ -28,29 +35,27 @@ export default function Board ({ dim, mines, gameManagement, onReset, onShowInfo
   const [playFlagSFX] = useSound(FlagSFX);
   const [playVictorySFX] = useSound(VictorySFX);
 
-  // Timer
-  const timerData = useStopwatch({ autoStart: false });
-
   if (!boardData) return null;
 
   const onSweep = (cell) => {
     // Sweeping mechanic
     setHoveringCell({ i: cell.i, j: cell.j });
-    switch (rng(0,2)) {
-      default: playSweep1(); break;
-      case 1: playSweep2(); break;
-      case 2: playSweep3(); break;
+    if (!mute) {
+      switch (rng(0,2)) {
+        default: playSweep1(); break;
+        case 1: playSweep2(); break;
+        case 2: playSweep3(); break;
+      }
     }
-    
+
     let newBoard = [...boardData];
     if ((cell.isMine || cell.totalAdjBombs !== 0) && totalClicks === 0) {
-      newBoard = regenBoard(cell.i, cell.j, dim, mines);
+      newBoard = regenBoard(cell.i, cell.j, dim, [...boardData]);
     }
-    
+
     if (!newBoard || newBoard[cell.i][cell.j].isMine) {
-      gameManagement.setGameOver(true);
-      timerData.pause();
-      playBoom();
+      dispatch(setGameOver(true));
+      if (!mute) playBoom();
     } else {
       checkWon(cell, [...newBoard]);
     }
@@ -60,11 +65,8 @@ export default function Board ({ dim, mines, gameManagement, onReset, onShowInfo
     const newBoard = revealAdj(cell.i, cell.j, [...inputBoard]);
     const newScore = getTotalSweeped([...newBoard]) / (Math.pow(dim, 2) - mines);
     if (newScore >= 1) {
-      gameManagement.setGameWon(true);
-      playVictorySFX();
-      timerData.pause();
-    } else if (!timerData.isRunning) {
-      timerData.start();
+      dispatch(setGameWon(true));
+      if (!mute) playVictorySFX();
     }
     setScore(newScore);
     setBoardData([...newBoard]);
@@ -73,7 +75,7 @@ export default function Board ({ dim, mines, gameManagement, onReset, onShowInfo
 
   const onFlag = (cell) => {
     // Flagging mechanic
-    playFlagSFX();
+    if (!mute) playFlagSFX();
     setBoardData(setFlag(cell.i, cell.j, [...boardData], { totalFlags, setTotalFlags }));
   }
   const onResetWrap = () => {
@@ -87,7 +89,7 @@ export default function Board ({ dim, mines, gameManagement, onReset, onShowInfo
     <Grid
       container
       sx={{
-        bgcolor: (gameManagement.gameOver) ? 'rgb(30,30,30)' : 'rgb(35,116,14)',
+        bgcolor: (gameOver) ? 'rgb(30,30,30)' : 'rgb(35,116,14)',
         width: 'min(100vh,100vw)',
         height: 'min(100vh,100vw)',
         overflow: 'hidden'
@@ -97,19 +99,20 @@ export default function Board ({ dim, mines, gameManagement, onReset, onShowInfo
         item
         xs={12}
         sx={{
-          bgcolor: (gameManagement.gameOver) ? 'rgb(30,30,30)' : 'rgb(35,116,14)',
+          bgcolor: (gameOver) ? 'rgb(30,30,30)' : 'rgb(35,116,14)',
           height: 'min(6vh,6vw)'
         }}
         px={'3.8%'}
       >
         <NavBar
           mines={mines}
+          dim={dim}
           progress={score}
-          gameOver={gameManagement.gameOver}
+          gameOver={gameOver}
           totalFlags={totalFlags}
           onReset={onResetWrap}
           onShowInfo={onShowInfo}
-          timerData={timerData}
+          onShowHighscore={onShowHighscore}
         />
       </Grid>
       <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
@@ -129,8 +132,6 @@ export default function Board ({ dim, mines, gameManagement, onReset, onShowInfo
                   odd={(indexI + indexJ) % 2 === 0}
                   startOfGame={totalClicks === 0}
                   hoveringCell={hoveringCell}
-                  gameOver={gameManagement.gameOver}
-                  gameWon={gameManagement.gameWon}
                   onLeftClick={() => { onSweep(cell) }}
                   onRightClick={() => { onFlag(cell) }}
                 />
@@ -158,7 +159,6 @@ export default function Board ({ dim, mines, gameManagement, onReset, onShowInfo
               >
                 <CellFx
                   data={cell}
-                  gameOver={gameManagement.gameOver}
                 />
               </Grid>
             ))

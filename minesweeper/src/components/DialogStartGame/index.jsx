@@ -12,13 +12,13 @@ function formReducer (currState, action) {
       return formDefault
     case 'normal-mode':
       return {
-        totalMines: 25,
-        boardDimension: 13,
+        totalMines: 40,
+        boardDimension: 15,
       }
     case 'hard-mode':
       return {
-        totalMines: 50,
-        boardDimension: 16,
+        totalMines: 99,
+        boardDimension: 25,
       }
     case 'update':
       return {
@@ -37,8 +37,10 @@ function formReducer (currState, action) {
 export default function DialogStartGame ({ open, onClose }) {
   const [formState, formDispatch] = useReducer(formReducer, formDefault);
   const { totalMines, boardDimension } = formState;
+  const percentageFilled = Math.min(100, totalMines * 100 / (boardDimension * boardDimension));
+
   const onCloseHandle = () => {
-    if (totalMines >= (boardDimension * boardDimension) || boardDimension > config.DIM_CAP) return;
+    if (percentageFilled > config.MAX_MINE_PERCENTAGE || boardDimension > config.DIM_CAP) return;
     onClose(totalMines, boardDimension);
   }
 
@@ -97,10 +99,10 @@ export default function DialogStartGame ({ open, onClose }) {
             Hard
           </Button>
         </Box>
-        {(totalMines >= (boardDimension * boardDimension)) && (
+        {(percentageFilled > config.MAX_MINE_PERCENTAGE) && (
           <Alert variant='outlined' severity='error' sx={{ mt: 2.5 }}>
             <Typography>
-              {'The Total Mines can\'t exceed the Board Dimension to the power of 2.'}
+              {`The Total Mines can't exceed ${config.MAX_MINE_PERCENTAGE}% of the board`}
             </Typography>
           </Alert>
         )}
@@ -113,7 +115,7 @@ export default function DialogStartGame ({ open, onClose }) {
         )}
         <Alert variant='outlined' severity='info' sx={{ mt: 2.5 }}>
           <Typography>
-          {`Percentage of board covered in mines = ${Math.min(100, totalMines * 100 / (boardDimension * boardDimension)).toFixed(2)}%`}
+          {`Percentage of board covered in mines = ${percentageFilled.toFixed(2)}%`}
           </Typography>
         </Alert>
       </DialogContent>

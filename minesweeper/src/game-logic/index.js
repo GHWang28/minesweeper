@@ -1,3 +1,7 @@
+export function modulo(n, m) {
+  return ((n % m) + m) % m;
+}
+
 /**
  * Generates a random integer between min and max inclusively
  * @param {Number} min 
@@ -39,25 +43,31 @@ export function createBoard (dim, mines) {
   const board2D = [];
   while (board1D.length) board2D.push(board1D.splice(0, dim));
 
+  return calcNeighbours(dim, [...board2D]);
+}
+
+function calcNeighbours (dim, board2D) {
+  const newBoard = [...board2D];
+
   for (let i = 0; i < dim; i++) {
     for (let j = 0; j < dim; j++) {
-      if (!board2D[i][j].isMine) {
-        board2D[i][j].totalAdjBombs = getAdjBombs(i, j, [...board2D]);
+      if (!newBoard[i][j].isMine) {
+        newBoard[i][j].totalAdjBombs = getAdjBombs(i, j, [...board2D]);
       } else {
         // Calculating charred effect when game is over
         for (const cell of [
-          ...getNeighbours(i, j, [...board2D], 3),
-          ...getNeighbours(i, j, [...board2D], 2),
-          ...getNeighbours(i, j, [...board2D])
+          ...getNeighbours(i, j, [...newBoard], 3),
+          ...getNeighbours(i, j, [...newBoard], 2),
+          ...getNeighbours(i, j, [...newBoard])
         ]) {
-          board2D[cell.i][cell.j].charred++;
+          newBoard[cell.i][cell.j].charred++;
         }
-        board2D[i][j].charred += 2;
+        newBoard[i][j].charred += 2;
       }
     }
   }
 
-  return [...board2D];
+  return [...newBoard];
 }
 
 function getAdjBombs (centerI, centerJ, board2D) {
@@ -124,14 +134,56 @@ export function getTotalSweeped (board2D) {
   return totalSweeped;
 }
 
-export function regenBoard (i, j, dim, mines) {
-  let newBoard = createBoard(dim, mines);
+export function regenBoard (i, j, dim, board2D) {
+  const newBoard = [...board2D];
+  let relocated = false;
   let timeoutCounter = 0;
-  while (newBoard[i][j].isMine && newBoard[i][j].totalAdjBombs !== 0 && timeoutCounter <= dim * dim * 2) {
-    newBoard = createBoard(dim, mines);
-    timeoutCounter++;
+
+  for (const adjCell of getNeighbours(i, j, [...newBoard], 2)) {
+    // If this adjacent cell is not a mine, do nothing
+    if (!adjCell.isMine) continue;
+
+    // Placing the mine elsewhere away from the click
+    timeoutCounter = 0;
+    while (newBoard[adjCell.i][adjCell.j].isMine) {
+      // Failsafe in case the loop goes on for too long
+      if (timeoutCounter === dim * dim * dim) break;
+
+      const newI = rng(0, dim - 1);
+      const newJ = rng(0, dim - 1);
+
+      // Checks that the new position is atleast 2 cells in radius away from the click
+      // and that the new position does not have a mine
+      if (calcDistance({i: newI, j: newJ}, {i, j}) > 2 && !newBoard[newI][newJ].isMine) {
+        newBoard[adjCell.i][adjCell.j].isMine = false;
+        newBoard[newI][newJ].isMine = true;
+        relocated = true;
+      }
+      timeoutCounter++;
+    }
   }
 
-  if (newBoard[i][j].isMine) return null;
-  return [...newBoard];
+  // Recalculating neighbours if a relocation occured
+  if (relocated) return calcNeighbours(dim, [...newBoard]);
+
+  // Else, return the board as usual
+  return [...board2D];
+}
+
+export function convertTimeToSeconds (days, hours, minutes, seconds) {
+  return days * 86400 + hours * 3600 + minutes * 60 + seconds;
+}
+
+export function recordHighscore (setHighscore, time, currHighscore, mines, dim) {
+  let scoreFound = false;
+  // Loop and find a worse high score to override
+  for (const index in currHighscore) {
+    if (currHighscore[index]?.mines === mines && currHighscore[index]?.dim === dim) {
+      scoreFound = true;
+      if (currHighscore[index]?.time >= time) currHighscore[index].time = time;
+    }
+    if (scoreFound) break;
+  }
+  if (!scoreFound) currHighscore.push({ mines, dim, time });
+  setHighscore(currHighscore);
 }

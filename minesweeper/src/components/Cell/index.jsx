@@ -1,5 +1,6 @@
 import { Box } from '@mui/material';
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { animated, useTransition } from 'react-spring';
 import { useLongPress } from 'use-long-press';
 import { calcDistance } from '../../game-logic';
@@ -28,8 +29,14 @@ const generateColor = (inputData, inputSweep, gameOver) => {
   return `rgb(${charred},${charred},${charred})`
 }
 
-export default function Cell ({ onLeftClick, onRightClick, data, hoveringCell, gameOver, gameWon, odd }) {
+export default function Cell ({ onLeftClick, onRightClick, data, hoveringCell, odd }) {
+  // Redux
+  const gameOver = useSelector(state => state.gameOver);
+  const gameWon = useSelector(state => state.gameWon);
+  
   const [lastFlagged, setLastFlagged] = useState(0);
+
+  // React spring animation
   const transitions = useTransition(data.isSweeped, {
     from: { rotateY: '-180deg' },
     enter: { rotateY: '0deg' },

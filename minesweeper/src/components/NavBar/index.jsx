@@ -1,35 +1,30 @@
 import React from 'react';
 import { Box, Grid, IconButton, keyframes, LinearProgress, Typography } from '@mui/material';
 import ReplayIcon from '@mui/icons-material/Replay';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import Timer from './Timer';
-
-const wobbleAnimation = keyframes`
-  0% {
-    rotate: 10deg
-  }
-  50% {
-    rotate: -10deg
-  }
-  100% {
-    rotate: 10deg
-  }
-`
+import { useDispatch, useSelector } from 'react-redux';
+import { setMute } from '../../redux/actions';
 
 const rotateAnimation = keyframes`
   0% {
-    scale: 1.0
+    scale: 1.05
   }
   50% {
-    scale: 0.9
+    scale: 0.8
   }
   100% {
-    scale: 1.0
+    scale: 1.05
   }
 `
 
-export default function NavBar ({ mines, progress, gameOver, onReset, onShowInfo, totalFlags, timerData }) {
+export default function NavBar ({ mines, dim, progress, gameOver, onReset, onShowInfo, onShowHighscore, totalFlags }) {
   const gameEnd = (gameOver || progress >= 1);
+  const dispatch = useDispatch();
+  const mute = useSelector(state => state.mute);
 
   return (
     <Grid container sx={{ height: '100%', color: 'whitesmoke'}}>
@@ -52,32 +47,33 @@ export default function NavBar ({ mines, progress, gameOver, onReset, onShowInfo
           <Box component='span' sx={{ fontWeight: 'bold' }}>{'Total Flags: '}</Box>{totalFlags}
         </Typography>
       </Grid>
-      <Timer timerData={timerData} gameOver={gameOver}/>
+      <Timer start={progress > 0} mines={mines} dim={dim} />
       <Grid item xs={4} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
-        <Typography
-          fontSize={'min(2vh,2vw)'}
-          fontWeight={(gameEnd) ? 'bold' : 'normal' }
-          ml='auto'
-          mr='min(1vh,1vw)'
-          sx={{
-            animation: (gameEnd) ? `${wobbleAnimation} 2s ease-in-out infinite` : '',
-            animationDelay: '-1s'
-          }}
-        >
-          {'Reset Game'}
-        </Typography>
         <IconButton
           title='Restart'
           onClick={onReset}
-          sx={{
-            mr: 'min(1vh,1vw)',
-            border: '2px solid whitesmoke',
-            width: 'min(4vh,4vw)',
-            height: 'min(4vh,4vw)',
-            animation: (gameEnd) ? `${rotateAnimation} 1s ease-in-out infinite` : ''
-          }}
+          sx={{ ml: 'auto', mr: 'min(1vh,1vw)', border: '2px solid whitesmoke', width: 'min(4vh,4vw)', height: 'min(4vh,4vw)', animation: (gameEnd) ? `${rotateAnimation} 1s ease-in-out infinite` : '' }}
         >
           <ReplayIcon sx={{ width: 'min(3vh,3vw)', height: 'min(3vh,3vw)' }}/>
+        </IconButton>
+        <IconButton
+          title='Mute'
+          onClick={() => { dispatch(setMute(!mute)) }}
+          sx={{ mr: 'min(1vh,1vw)', border: '2px solid whitesmoke', width: 'min(4vh,4vw)', height: 'min(4vh,4vw)' }}
+        >
+          {(!mute) && (
+            <VolumeUpIcon sx={{ width: 'min(3vh,3vw)', height: 'min(3vh,3vw)' }}/>
+          )}
+          {(mute) && (
+            <VolumeOffIcon sx={{ width: 'min(3vh,3vw)', height: 'min(3vh,3vw)' }}/>
+          )}
+        </IconButton>
+        <IconButton
+          title='Highscore'
+          onClick={onShowHighscore}
+          sx={{ mr: 'min(1vh,1vw)', border: '2px solid whitesmoke', width: 'min(4vh,4vw)', height: 'min(4vh,4vw)', animation: (gameEnd) ? `${rotateAnimation} 1s ease-in-out infinite` : '' }}
+        >
+          <EmojiEventsIcon sx={{ width: 'min(3vh,3vw)', height: 'min(3vh,3vw)' }}/>
         </IconButton>
         <IconButton title='How to Play' onClick={onShowInfo} sx={{ border: '2px solid whitesmoke', width: 'min(4vh,4vw)', height: 'min(4vh,4vw)' }}>
           <InfoOutlinedIcon sx={{ width: 'min(3vh,3vw)', height: 'min(3vh,3vw)' }}/>

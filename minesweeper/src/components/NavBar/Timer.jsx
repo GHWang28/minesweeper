@@ -1,7 +1,34 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Grid, Typography } from '@mui/material';
+import { useStopwatch } from 'react-timer-hook';
+import { useDispatch, useSelector } from 'react-redux';
+import { convertTimeToSeconds, recordHighscore } from '../../game-logic';
+import { updateHighscore } from '../../redux/actions';
 
-export default function Timer ({ timerData, gameOver }) {
+export default function Timer ({ start, mines, dim }) {
+  const timerData = useStopwatch({ autoStart: false });
+  const gameOver = useSelector(state => state.gameOver);
+  const gameWon = useSelector(state => state.gameWon);
+  const highscore = useSelector(state => state.highscore);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (gameOver || gameWon) {
+      if (gameWon) {
+        recordHighscore(
+          (score) => { dispatch(updateHighscore(score)) },
+          convertTimeToSeconds(timerData.days, timerData.hours, timerData.minutes, timerData.seconds),
+          [...highscore],
+          mines,
+          dim
+        );
+      }
+      timerData.pause();
+    } else if (start && !timerData.isRunning) {
+      timerData.start();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameOver, gameWon, start])
 
   return (
     <Grid

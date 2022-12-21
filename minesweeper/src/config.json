@@ -1,3 +1,5 @@
 {
-    "DIM_CAP": 20
+    "DIM_CAP": 30,
+    "MAX_MINE_PERCENTAGE": 50,
+    "PRIVATE_KEY": "@#MINESWEEPER#@"
 }

@@ -30,7 +30,7 @@ export default function Fire ({ show = true }) {
           position: 'absolute',
           top: `${data.y}%`,
           left: `${data.x}%`,
-          width: '200%',
+          width: '150%',
           translate: '-50% -75%',
           zIndex: 2
         }}

@@ -25,7 +25,8 @@ export default function Explosion ({ length, centerColor, outerColor, radius = 5
       sx={{
         animation: `${expandAnimation} ${length}s ease-out 1`,
         opacity: 0,
-        position: 'absolute'
+        position: 'absolute',
+        zIndex: 3
       }}
     >
       <defs>
