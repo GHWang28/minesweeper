@@ -125,7 +125,7 @@ export default function DialogStartGame ({ open, onClose }) {
           {'This recreation of '}
           <em>{'Minesweeper'}</em>
           {' was made by '}
-          <Link href='https://ghwang28.github.io/'>
+          <Link href='https://ghwang28.github.io/' target='_blank'>
             {'Gordon Wang'}
           </Link>
           {'.'}
