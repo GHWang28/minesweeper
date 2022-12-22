@@ -1,15 +1,17 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import { animated, useTransition } from 'react-spring';
+import FireFlag from './FireFlag';
 
-export default function Flag ({ planted }) {
-
+export default function Flag ({ planted, gameOver }) {
   const transitions = useTransition(planted, {
     from: { y: '0%', opacity: 1, rotate: '0deg', scaleY: 0.1 },
     enter: {  y: '0%', opacity: 1, rotate: '0deg', scaleY: 1 },
     leave: {  y: '-75%', opacity: 0, rotate: '360deg', scaleY: 1 }
   })
   const AnimatedBox = animated(Box);
+
+  if (gameOver && planted) return <FireFlag />;
 
   return transitions((style, plantedTransition) => (
     plantedTransition ? (

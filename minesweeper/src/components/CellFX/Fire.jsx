@@ -24,10 +24,11 @@ export default function Fire ({ show = true }) {
       <AnimatedBox
         style={style}
         component='img'
-        src='/sprites/fire.gif'
+        src={`${process.env.PUBLIC_URL}/sprites/fire.gif`}
         alt='Fire'
         sx={{
           position: 'absolute',
+          opacity: 0.8,
           top: `${data.y}%`,
           left: `${data.x}%`,
           width: '150%',

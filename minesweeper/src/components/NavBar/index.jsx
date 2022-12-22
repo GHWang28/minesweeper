@@ -57,7 +57,7 @@ export default function NavBar ({ mines, dim, progress, gameOver, onReset, onSho
           <ReplayIcon sx={{ width: 'min(3vh,3vw)', height: 'min(3vh,3vw)' }}/>
         </IconButton>
         <IconButton
-          title='Mute'
+          title={(mute) ? 'Unmute' : 'Mute'}
           onClick={() => { dispatch(setMute(!mute)) }}
           sx={{ mr: 'min(1vh,1vw)', border: '2px solid whitesmoke', width: 'min(4vh,4vw)', height: 'min(4vh,4vw)' }}
         >

@@ -35,7 +35,7 @@ export default function Flower ({ show = true }) {
       <AnimatedBox
         style={style}
         component='img'
-        src='/sprites/flower.png'
+        src={`${process.env.PUBLIC_URL}/sprites/flower.png`}
         alt='Flower'
         sx={{
           position: 'absolute',

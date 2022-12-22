@@ -37,6 +37,18 @@ export default function Board ({ dim, mines, onReset, onShowInfo, onShowHighscor
 
   if (!boardData) return null;
 
+  const checkWon = (cell, inputBoard) => {
+    // Checking if won
+    const newBoard = revealAdj(cell.i, cell.j, [...inputBoard]);
+    const newScore = getTotalSweeped([...newBoard]) / (Math.pow(dim, 2) - mines);
+    if (newScore >= 1) {
+      dispatch(setGameWon(true));
+      if (!mute) playVictorySFX();
+    }
+    setScore(newScore);
+    setBoardData([...newBoard]);
+    setTotalClicks(totalClicks + 1);
+  }
   const onSweep = (cell) => {
     // Sweeping mechanic
     setHoveringCell({ i: cell.i, j: cell.j });
@@ -60,21 +72,9 @@ export default function Board ({ dim, mines, onReset, onShowInfo, onShowHighscor
       checkWon(cell, [...newBoard]);
     }
   }
-  const checkWon = (cell, inputBoard) => {
-    // Checking if won
-    const newBoard = revealAdj(cell.i, cell.j, [...inputBoard]);
-    const newScore = getTotalSweeped([...newBoard]) / (Math.pow(dim, 2) - mines);
-    if (newScore >= 1) {
-      dispatch(setGameWon(true));
-      if (!mute) playVictorySFX();
-    }
-    setScore(newScore);
-    setBoardData([...newBoard]);
-    setTotalClicks(totalClicks + 1);
-  }
-
   const onFlag = (cell) => {
     // Flagging mechanic
+    if (gameOver) return;
     if (!mute) playFlagSFX();
     setBoardData(setFlag(cell.i, cell.j, [...boardData], { totalFlags, setTotalFlags }));
   }
