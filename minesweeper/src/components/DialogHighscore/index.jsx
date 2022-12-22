@@ -32,22 +32,22 @@ export default function DialogHighScore ({ open, onClose }) {
           </Grid>
           <Grid item xs={4} sx={{ border: '2px solid whitesmoke' }}>
             <Typography align='center'>
-              {'Time'}
+              {'Best Time'}
             </Typography>
           </Grid>
           {highscore.map((score, index) => (
             <Fragment key={`score-${index}`}>
-              <Grid item xs={4} sx={{ border: '2px solid gray' }}>
+              <Grid item xs={4} sx={{ border: '2px solid gray', bgcolor: (index % 2) ? 'rgba(0,0,0,0.3)' : '' }}>
                 <Typography align='center'>
                   {score?.dim}
                 </Typography>
               </Grid>
-              <Grid item xs={4} sx={{ border: '2px solid gray' }}>
+              <Grid item xs={4} sx={{ border: '2px solid gray', bgcolor: (index % 2) ? 'rgba(0,0,0,0.3)' : '' }}>
                 <Typography align='center'>
                   {score?.mines}
                 </Typography>
               </Grid>
-              <Grid item xs={4} sx={{ border: '2px solid gray' }}>
+              <Grid item xs={4} sx={{ border: '2px solid gray', bgcolor: (index % 2) ? 'rgba(0,0,0,0.3)' : '' }}>
                 <Typography align='center'>
                   {`${score?.time} seconds`}
                 </Typography>
