@@ -1,5 +1,6 @@
-import './App.css';
+import 'react-toastify/dist/ReactToastify.css';
 import 'react-slideshow-image/dist/styles.css';
+import './App.css';
 import React, { Fragment, useState } from 'react';
 import DialogStartGame from './components/DialogStartGame';
 import Board from './components/Board';
@@ -10,6 +11,7 @@ import DialogInfo from './components/DialogInfo';
 import { useDispatch, useSelector } from 'react-redux';
 import { setGameOver, setGameWon } from './redux/actions';
 import DialogHighScore from './components/DialogHighscore';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   const [showStart, setShowStart] = useState(true);
@@ -26,6 +28,11 @@ function App() {
 
   return (
     <Fragment>
+      <ToastContainer
+        position='bottom-left'
+        autoClose={5000}
+        pauseOnHover
+      />
       {(gameWon && !gameOver) && (
         <ReactConfetti width={width} height={height} numberOfPieces={350}/>
       )}

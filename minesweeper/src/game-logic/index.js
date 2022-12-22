@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+
 export function modulo(n, m) {
   return ((n % m) + m) % m;
 }
@@ -194,6 +196,9 @@ export function recordHighscore (setHighscore, time, currHighscore, mines, dim) 
     }
     if (scoreFound) break;
   }
-  if (!scoreFound) currHighscore.push({ mines, dim, time });
+  if (!scoreFound) {
+    toast.info(`A new record was set for Dimension ${dim}x${dim} with ${mines} Mines.`);
+    currHighscore.push({ mines, dim, time });
+  }
   setHighscore(currHighscore);
 }

@@ -4,6 +4,7 @@ import { useStopwatch } from 'react-timer-hook';
 import { useDispatch, useSelector } from 'react-redux';
 import { convertTimeToSeconds, recordHighscore } from '../../game-logic';
 import { updateHighscore } from '../../redux/actions';
+import { toast } from 'react-toastify';
 
 export default function Timer ({ start, mines, dim }) {
   const timerData = useStopwatch({ autoStart: false });
@@ -15,6 +16,7 @@ export default function Timer ({ start, mines, dim }) {
   useEffect(() => {
     if (gameOver || gameWon) {
       if (gameWon) {
+        toast('You win!');
         recordHighscore(
           (score) => { dispatch(updateHighscore(score)) },
           convertTimeToSeconds(timerData.days, timerData.hours, timerData.minutes, timerData.seconds),
@@ -22,6 +24,8 @@ export default function Timer ({ start, mines, dim }) {
           mines,
           dim
         );
+      } else {
+        toast('You lost!');
       }
       timerData.pause();
     } else if (start && !timerData.isRunning) {
