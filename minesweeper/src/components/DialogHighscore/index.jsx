@@ -39,7 +39,7 @@ export default function DialogHighScore ({ open, onClose }) {
             <Fragment key={`score-${index}`}>
               <Grid item xs={4} sx={{ border: '2px solid gray', bgcolor: (index % 2) ? 'rgba(0,0,0,0.3)' : '' }}>
                 <Typography align='center'>
-                  {score?.dim}
+                  {`${score?.dim}x${score?.dim}`}
                 </Typography>
               </Grid>
               <Grid item xs={4} sx={{ border: '2px solid gray', bgcolor: (index % 2) ? 'rgba(0,0,0,0.3)' : '' }}>
