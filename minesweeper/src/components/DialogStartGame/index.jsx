@@ -1,5 +1,5 @@
 import React, { useReducer } from 'react';
-import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Link, TextField, Typography } from '@mui/material';
 import config from '../../config.json';
 
 const formDefault = {
@@ -12,13 +12,13 @@ function formReducer (currState, action) {
       return formDefault
     case 'normal-mode':
       return {
-        totalMines: 40,
+        totalMines: 30,
         boardDimension: 15,
       }
     case 'hard-mode':
       return {
         totalMines: 99,
-        boardDimension: 25,
+        boardDimension: 23,
       }
     case 'update':
       return {
@@ -39,7 +39,9 @@ export default function DialogStartGame ({ open, onClose }) {
   const { totalMines, boardDimension } = formState;
   const percentageFilled = Math.min(100, totalMines * 100 / (boardDimension * boardDimension));
 
-  const onCloseHandle = () => {
+  const onCloseHandle = (_, reason) => {
+    // Ignore if the backdrop was clicked on
+    if (reason === 'backdropClick') return;
     if (percentageFilled > config.MAX_MINE_PERCENTAGE || boardDimension > config.DIM_CAP) return;
     onClose(totalMines, boardDimension);
   }
@@ -118,6 +120,16 @@ export default function DialogStartGame ({ open, onClose }) {
           {`Percentage of board covered in mines = ${percentageFilled.toFixed(2)}%`}
           </Typography>
         </Alert>
+        {/* Attribution */}
+        <DialogContentText my={1} align='left'>
+          {'This recreation of '}
+          <em>{'Minesweeper'}</em>
+          {' was made by '}
+          <Link href='https://ghwang28.github.io/'>
+            {'Gordon Wang'}
+          </Link>
+          {'.'}
+        </DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={onCloseHandle}>
