@@ -46,9 +46,19 @@ export function createBoard (dim, mines) {
   return calcNeighbours(dim, [...board2D]);
 }
 
-function calcNeighbours (dim, board2D) {
+function calcNeighbours (dim, board2D, recalculate = false) {
   const newBoard = [...board2D];
 
+  // Clear charred spots first
+  if (recalculate) {
+    for (let i = 0; i < dim; i++) {
+      for (let j = 0; j < dim; j++) {
+        newBoard[i][j].charred = 0;
+      }
+    }
+  }
+
+  // Calcualte charred spots
   for (let i = 0; i < dim; i++) {
     for (let j = 0; j < dim; j++) {
       if (!newBoard[i][j].isMine) {
@@ -164,7 +174,7 @@ export function regenBoard (i, j, dim, board2D) {
   }
 
   // Recalculating neighbours if a relocation occured
-  if (relocated) return calcNeighbours(dim, [...newBoard]);
+  if (relocated) return calcNeighbours(dim, [...newBoard], true);
 
   // Else, return the board as usual
   return [...board2D];
