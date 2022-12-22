@@ -16,10 +16,10 @@ const flowerAnimation = keyframes`
 `
 
 export default function Flower ({ show = true }) {
-  const [data, setData] = useState({ x: 0, y: 0, hue: 0, rot: 0 });
+  const [data, setData] = useState({ x: 0, y: 0, hue: 0 });
 
   useEffect(() => {
-    setData({ x: rng(0,100), y: rng(0,100), hue: rng(0, 359), rot: rng(0, 359) });
+    setData({ x: rng(0,100), y: rng(0,100), hue: rng(0, 359) });
   }, []);
 
   const transitions = useTransition(show, {
@@ -44,7 +44,6 @@ export default function Flower ({ show = true }) {
           left: `${data.x}%`,
           width: '50%',
           translate: '-50% -50%',
-          rotate: `${data.rot}deg`,
           animation: `${flowerAnimation} 2s ease-in-out infinite`,
           zIndex: 2
         }}
