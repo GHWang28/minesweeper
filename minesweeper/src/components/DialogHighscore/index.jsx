@@ -15,7 +15,7 @@ export default function DialogHighScore ({ open, onClose }) {
       <DialogContent>
         <Grid container>
           <Grid item xs={12} sx={{ border: '2px solid whitesmoke' }}>
-            <Button fullWidth variant='outlined' onClick={() => { dispatch(updateHighscore([])) }}>
+            <Button fullWidth variant='outlined' color='error' onClick={() => { dispatch(updateHighscore([])) }}>
               {'Reset scores'}
             </Button>
           </Grid>
