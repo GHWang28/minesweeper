@@ -1,14 +1,23 @@
 :root {
-  --toastify-color-progress-light: linear-gradient(
+  /* Styling React toastify */
+  --toastify-color-progress-dark: linear-gradient(
     to right,
-    rgb(255,246,53),
-    rgb(255,130,33)
+    rgb(255,130,33),
+    rgb(255,246,53)
+  );
+  --toastify-color-progress-error: linear-gradient(
+    to right,
+    rgb(255,16,75),
+    rgb(255,159,143)
   );
 }
 
 body {
   background: rgb(40,40,40);
   margin: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .cell:hover {

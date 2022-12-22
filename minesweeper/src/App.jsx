@@ -4,7 +4,7 @@ import './App.css';
 import React, { Fragment, useState } from 'react';
 import DialogStartGame from './components/DialogStartGame';
 import Board from './components/Board';
-import { Box } from '@mui/material';
+import { Box, useMediaQuery } from '@mui/material';
 import ReactConfetti from 'react-confetti';
 import { useWindowSize } from '@react-hook/window-size'
 import DialogInfo from './components/DialogInfo';
@@ -26,15 +26,29 @@ function App() {
   const [mines, setMines] = useState(5);
   const [width, height] = useWindowSize();
 
+  const smallMq = useMediaQuery((theme) => theme.breakpoints.up('sm'));
+  const mediumMq = useMediaQuery((theme) => theme.breakpoints.up('sm'));
+  const largeMq = useMediaQuery((theme) => theme.breakpoints.up('lg'));
+  const xLargeMq = useMediaQuery((theme) => theme.breakpoints.up('xl'));
+
+  const totalConfetti = () => {
+    if (xLargeMq) return 350;
+    if (largeMq) return 200;
+    if (mediumMq) return 150;
+    if (smallMq) return 100;
+    return 50;
+  }
+
   return (
     <Fragment>
       <ToastContainer
         position='bottom-left'
         autoClose={5000}
         pauseOnHover
+        theme={'dark'}
       />
       {(gameWon && !gameOver) && (
-        <ReactConfetti width={width} height={height} numberOfPieces={350}/>
+        <ReactConfetti width={width} height={height} numberOfPieces={totalConfetti()}/>
       )}
       <DialogHighScore
         open={showHighscore}

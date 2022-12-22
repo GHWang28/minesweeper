@@ -13,6 +13,7 @@ export default function Timer ({ start, mines, dim }) {
   const highscore = useSelector(state => state.highscore);
   const dispatch = useDispatch();
 
+  // Winning logic
   useEffect(() => {
     if (gameOver || gameWon) {
       if (gameWon) {
@@ -25,7 +26,9 @@ export default function Timer ({ start, mines, dim }) {
           dim
         );
       } else {
-        toast('You lost!');
+        toast.error('You lost!', {
+          icon: false
+        });
       }
       timerData.pause();
     } else if (start && !timerData.isRunning) {
@@ -46,7 +49,7 @@ export default function Timer ({ start, mines, dim }) {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        color: (!gameOver) ? 'inherit' : 'red'
+        color: (gameWon) ? 'rgb(255,246,53)' : ((gameOver) ? 'rgb(255,16,75)' : 'inherit')
       }}
     >
       <Typography fontSize={'min(4vh,4vw)'}>
