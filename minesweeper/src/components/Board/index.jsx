@@ -145,7 +145,7 @@ export default function Board ({ dim, mines, onReset, onShowInfo, onShowHighscor
           container
           sx={{
             pointerEvents: 'none',
-            width: 'min(92vh,94vw)',
+            width: 'min(92vh,92vw)',
             height: 'min(92vh,92vw)',
             position: 'absolute'
           }}
@@ -158,9 +158,7 @@ export default function Board ({ dim, mines, onReset, onShowInfo, onShowHighscor
                 xs={12 / dim}
                 sx={{ position: 'relative', pointerEvents: 'none' }}
               >
-                <CellFx
-                  data={cell}
-                />
+                <CellFx data={cell}/>
               </Grid>
             ))
           ))}
