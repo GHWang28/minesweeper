@@ -16,15 +16,14 @@ import { setGameOver, setGameWon } from '../../redux/actions';
 import { PropTypes } from 'prop-types';
 
 export default function Board ({ dim, mines, onReset, onShowInfo, onShowHighscore }) {
+  // States
   const [boardData, setBoardData] = useState(createBoard(dim, mines));
   const [totalFlags, setTotalFlags] = useState(0);
-  const [totalClicks, setTotalClicks] = useState(0);
   const [score, setScore] = useState(0);
   const [hoveringCell, setHoveringCell] = useState({ i: Math.floor(dim / 2), j: Math.floor(dim / 2) })
 
   // Redux
   const gameOver = useSelector(state => state.gameOver);
-  // const gameWon = useSelector(state => state.gameWon);
   const dispatch = useDispatch();
 
   // Play SFX
@@ -36,8 +35,10 @@ export default function Board ({ dim, mines, onReset, onShowInfo, onShowHighscor
   const [playFlagSFX] = useSound(FlagSFX);
   const [playVictorySFX] = useSound(VictorySFX);
 
+  // If data was not able to be generated, return nothing
   if (!boardData) return null;
 
+  // Winning logic
   const checkWon = (cell, inputBoard) => {
     // Checking if won
     const newBoard = revealAdj(cell.i, cell.j, [...inputBoard]);
@@ -48,8 +49,8 @@ export default function Board ({ dim, mines, onReset, onShowInfo, onShowHighscor
     }
     setScore(newScore);
     setBoardData([...newBoard]);
-    setTotalClicks(totalClicks + 1);
   }
+  // Sweeping logic
   const onSweep = (cell) => {
     // Sweeping mechanic
     setHoveringCell({ i: cell.i, j: cell.j });
@@ -62,10 +63,12 @@ export default function Board ({ dim, mines, onReset, onShowInfo, onShowHighscor
     }
 
     let newBoard = [...boardData];
-    if ((cell.isMine || cell.totalAdjBombs !== 0) && totalClicks === 0) {
+    // Try and regenerate a new board if the player clicks on a bomb on first turn
+    if ((cell.isMine || cell.totalAdjBombs !== 0) && score === 0) {
       newBoard = regenBoard(cell.i, cell.j, dim, [...boardData]);
     }
 
+    // If a newboard was unable to be generated, trigger Game Over. Else, sweep as usual
     if (!newBoard || newBoard[cell.i][cell.j].isMine) {
       dispatch(setGameOver(true));
       if (!mute) playBoom();
@@ -73,17 +76,12 @@ export default function Board ({ dim, mines, onReset, onShowInfo, onShowHighscor
       checkWon(cell, [...newBoard]);
     }
   }
+  // Flagging logic
   const onFlag = (cell) => {
     // Flagging mechanic
     if (gameOver) return;
     if (!mute) playFlagSFX();
     setBoardData(setFlag(cell.i, cell.j, [...boardData], { totalFlags, setTotalFlags }));
-  }
-  const onResetWrap = () => {
-    // Resetting the game
-    setTotalFlags(0);
-    setTotalClicks(0);
-    onReset();
   }
 
   return (
@@ -111,7 +109,7 @@ export default function Board ({ dim, mines, onReset, onShowInfo, onShowHighscor
           progress={score}
           gameOver={gameOver}
           totalFlags={totalFlags}
-          onReset={onResetWrap}
+          onReset={onReset}
           onShowInfo={onShowInfo}
           onShowHighscore={onShowHighscore}
         />
@@ -131,7 +129,7 @@ export default function Board ({ dim, mines, onReset, onShowInfo, onShowHighscor
                 <Cell
                   data={cell}
                   odd={(indexI + indexJ) % 2 === 0}
-                  startOfGame={totalClicks === 0}
+                  startOfGame={score === 0}
                   hoveringCell={hoveringCell}
                   onLeftClick={() => { onSweep(cell) }}
                   onRightClick={() => { onFlag(cell) }}

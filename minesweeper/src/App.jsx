@@ -43,9 +43,9 @@ function App() {
     <Fragment>
       <ToastContainer
         position='bottom-left'
-        autoClose={5000}
+        autoClose={7500}
         pauseOnHover
-        theme={'dark'}
+        theme='dark'
       />
       {(gameWon && !gameOver) && (
         <ReactConfetti width={width} height={height} numberOfPieces={totalConfetti()}/>
