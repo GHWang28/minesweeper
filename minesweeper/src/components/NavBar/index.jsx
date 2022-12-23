@@ -8,6 +8,7 @@ import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import Timer from './Timer';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMute } from '../../redux/actions';
+import { PropTypes } from 'prop-types';
 
 const rotateAnimation = keyframes`
   0% {
@@ -92,4 +93,15 @@ export default function NavBar ({ mines, dim, progress, gameOver, onReset, onSho
       </Grid>
     </Grid>
   )
+}
+
+NavBar.propTypes = {
+  mines: PropTypes.number.isRequired,
+  dim: PropTypes.number.isRequired,
+  progress: PropTypes.number.isRequired,
+  gameOver: PropTypes.bool.isRequired,
+  onReset: PropTypes.func.isRequired,
+  onShowInfo: PropTypes.func.isRequired,
+  onShowHighscore: PropTypes.func.isRequired,
+  totalFlags: PropTypes.number.isRequired,
 }

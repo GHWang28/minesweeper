@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import { rng } from '../../game-logic';
 
-
 export default function FireFlag () {
   const [flameHue, setFlameHue] = useState(0);
   useEffect(() => {

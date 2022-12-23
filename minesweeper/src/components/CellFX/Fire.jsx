@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import { rng } from '../../game-logic';
 import { animated, useTransition } from 'react-spring';
-
+import PropTypes from 'prop-types';
 
 export default function Fire ({ show = true }) {
   const [data, setData] = useState({ x: 0, y: 0 });
@@ -40,4 +40,8 @@ export default function Fire ({ show = true }) {
       null
     )
   ))
+}
+
+Fire.propTypes = {
+  show: PropTypes.bool
 }

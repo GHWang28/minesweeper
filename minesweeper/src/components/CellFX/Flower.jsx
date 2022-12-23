@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, keyframes } from '@mui/material';
 import { rng } from '../../game-logic';
 import { animated, useTransition } from 'react-spring';
+import PropTypes from 'prop-types';
 
 const flowerAnimation = keyframes`
   0% {
@@ -53,3 +54,7 @@ export default function Flower ({ show = true }) {
     )
   ))
 }
+
+Flower.propTypes = {
+  show: PropTypes.bool,
+};

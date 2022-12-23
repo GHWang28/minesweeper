@@ -13,6 +13,7 @@ import FlagSFX from '../../sfx/flag.ogg';
 import VictorySFX from '../../sfx/victory.ogg';
 import { useDispatch, useSelector } from 'react-redux';
 import { setGameOver, setGameWon } from '../../redux/actions';
+import { PropTypes } from 'prop-types';
 
 export default function Board ({ dim, mines, onReset, onShowInfo, onShowHighscore }) {
   const [boardData, setBoardData] = useState(createBoard(dim, mines));
@@ -167,4 +168,12 @@ export default function Board ({ dim, mines, onReset, onShowInfo, onShowHighscor
       </Grid>
     </Grid>
   )
+}
+
+Board.propTypes = {
+  dim: PropTypes.number.isRequired,
+  mines: PropTypes.number.isRequired,
+  onReset: PropTypes.func.isRequired,
+  onShowInfo: PropTypes.func.isRequired,
+  onShowHighscore: PropTypes.func.isRequired
 }

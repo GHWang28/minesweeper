@@ -2,6 +2,7 @@ import React from 'react';
 import { Box } from '@mui/material';
 import { animated, useTransition } from 'react-spring';
 import FireFlag from './FireFlag';
+import { PropTypes } from 'prop-types';
 
 export default function Flag ({ planted, gameOver }) {
   const transitions = useTransition(planted, {
@@ -33,4 +34,9 @@ export default function Flag ({ planted, gameOver }) {
       null
     )
   ))
-} 
+}
+
+Flag.propTypes = {
+  planted: PropTypes.bool.isRequired,
+  gameOver: PropTypes.bool.isRequired
+}

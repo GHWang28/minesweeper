@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateHighscore } from '../../redux/actions';
+import PropTypes from 'prop-types';
 
 export default function DialogHighScore ({ open, onClose }) {
   const highscore = useSelector(state => state.highscore);
@@ -15,7 +16,7 @@ export default function DialogHighScore ({ open, onClose }) {
       <DialogContent>
         <Grid container>
           <Grid item xs={12} sx={{ border: '2px solid whitesmoke' }}>
-            <Button fullWidth variant='outlined' color='error' onClick={() => { dispatch(updateHighscore([])) }}>
+            <Button fullWidth color='error' onClick={() => { dispatch(updateHighscore([])) }}>
               {'Reset scores'}
             </Button>
           </Grid>
@@ -35,6 +36,13 @@ export default function DialogHighScore ({ open, onClose }) {
               {'Best Time'}
             </Typography>
           </Grid>
+          {(highscore.length === 0) && (
+            <Grid item xs={12} sx={{ border: '2px solid gray' }}>
+              <Typography align='center'>
+                {'No scores recorded yet'}
+              </Typography>
+            </Grid>
+          )}
           {highscore.map((score, index) => (
             <Fragment key={`score-${index}`}>
               <Grid item xs={4} sx={{ border: '2px solid gray', bgcolor: (index % 2) ? 'rgba(0,0,0,0.3)' : '' }}>
@@ -64,3 +72,8 @@ export default function DialogHighScore ({ open, onClose }) {
     </Dialog>
   )
 }
+
+DialogHighScore.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired
+};

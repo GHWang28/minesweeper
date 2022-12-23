@@ -6,6 +6,7 @@ import Fire from './Fire';
 import Explosion from './Explosion';
 import Flag from './Flag';
 import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 
 export default function CellFx ({ data }) {
 
@@ -29,4 +30,8 @@ export default function CellFx ({ data }) {
       <Fire show={hasFlower && gameOver}/>
     </Fragment>
   )
+}
+
+CellFx.propTypes = {
+  data: PropTypes.object.isRequired
 }

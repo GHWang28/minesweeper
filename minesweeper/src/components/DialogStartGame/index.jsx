@@ -1,6 +1,7 @@
 import React, { useReducer } from 'react';
 import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Link, TextField, Typography } from '@mui/material';
 import config from '../../config.json';
+import PropTypes from 'prop-types';
 
 const formDefault = {
   totalMines: 10,
@@ -139,3 +140,8 @@ export default function DialogStartGame ({ open, onClose }) {
     </Dialog>
   )
 }
+
+DialogStartGame.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired
+};

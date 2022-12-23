@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, keyframes } from '@mui/material'
-
+import PropTypes from 'prop-types';
 
 export default function Shockwave ({ length, color = 'white', radius = 5 }) {
   const expandAnimation = keyframes`
@@ -31,3 +31,9 @@ export default function Shockwave ({ length, color = 'white', radius = 5 }) {
     </Box>
   )
 }
+
+Shockwave.propTypes = {
+  length: PropTypes.number,
+  color: PropTypes.string,
+  radius: PropTypes.number,
+};

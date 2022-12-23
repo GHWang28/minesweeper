@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { convertTimeToSeconds, recordHighscore } from '../../game-logic';
 import { updateHighscore } from '../../redux/actions';
 import { toast } from 'react-toastify';
+import { PropTypes } from 'prop-types';
 
 export default function Timer ({ start, mines, dim }) {
   const timerData = useStopwatch({ autoStart: false });
@@ -63,6 +64,10 @@ export default function Timer ({ start, mines, dim }) {
       </Typography>
     </Grid>
   )
+}
 
-  
+Timer.propTypes = {
+  start: PropTypes.bool.isRequired,
+  mines: PropTypes.number.isRequired,
+  dim: PropTypes.number.isRequired,
 }
